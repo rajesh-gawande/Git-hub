@@ -1,5 +1,6 @@
-FROM apache2:latest
+FROM ubuntu:latest
 
-LABEL maintainer "rajesh.gawande@hotmail.com
+LABEL maintainer "rajesh.gawande@hotmail.com"
 
-EXPOSE 8000
+
+
