@@ -37,3 +37,92 @@ stage("deploy application on k8 cluster")
      enableConfigSubstitution: true
 }
 
+
+
+
+-------------------Kubernetes pipeline---
+
+Prerequisite:
+
+-Git webhooks in settings-integrations and services create webhooks
+-paste url in jekins location in configure system
+ https;/35.195.42.1:8080
+-configure docker hub cred in envrionment variables name and value 
+-Configure docker and kubernetes with jenkins
+-jenkisn server you should have docker installed
+-kubectl
+-.kube-> cp ./config /home/jenkins/.kube/
+-.kube-> sudo cp ./config /var/lib/jenkins/ .kube/
+
+
+
+
+
+image_name: "jankiram/hellowhale:${build_number}"
+docker build . -t $image_name
+docker login -u infarajesh -p ${docker_hub}
+docker push $image_name
+
+
+image_name="janakiram/hellowhale:${build_number}"
+kubectl set image deployment/hellowhale hellowhale= $image_name
+
+
+kubectl rollout history deployment/hellowwhale
+--------------Jenkisn kubernetes----------------
+
+-git as source code
+-jenkisn server with docker
+-sudo curl =fssl ge.docker.com |/bin/bash
+-add jenkins user in -aG docker group
+sud usermod -aG docker jenkins
+-restart jenkins
+
+
+------kenkins file for kubernetes deployment----------
+node
+{
+stage("git clone")
+{
+  git credentialsid: by using jenkins pipeline sysntax
+}
+stage("Maven Build")
+{
+	def mavenhome= tool name: "Maven-3.6.1", type:"maven"
+	def mavencmd= "${mavenhome}/bin/mvn"
+	sh "${mavencmd} clean package"
+}
+stage("Docker Push")
+{
+ withCredentials with the help of pipeline sysntax
+ sh "docker login -u infarajesh -p ${Docker_hub_credentials}
+}
+sh "docker push infarajesh/spring-boot-mango"
+
+sta',ge("deploy application on k8 cluster") # need to configure .kube/config file data in jenkins under credentials(kubernetes deploy option) to communicate with the kubenetes cluster
+{
+ kubernetesDeploy(
+     configs: 'springbootmongo.yamal'# this yam contents all pod,replication control and service .yaml file
+     kubeconfigID: 'kubernetes_cluster_id'  # this id has taken from the cred window in jenkins
+     enableConfigSubstitution: true
+}
+
+}
+
+## for automatic image build number
+
+pipeline{
+ 	agent any{
+        envrionment {
+             docker_tag= dockerTag()
+             }
+    }
+}
+
+def dockerTag()
+{
+  def tag =sh script: 'git rev-parse head', returnstdout: true
+	return tag
+}
+}
+
