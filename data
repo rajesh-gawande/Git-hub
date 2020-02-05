@@ -19,3 +19,21 @@ Spec:
 apiVersion: v1
 kind: ReplicationController
 replicas: 4
+
+--------------
+
+stage("Docker Push"
+{
+ withCredentials with the help of pipeline sysntax
+ sh "docker login -u infarajesh -p ${Docker_hub_credentials}
+}
+sh "docker push infarajesh/spring-boot-mango"
+
+stage("deploy application on k8 cluster")
+{
+ kubernetesDeploy(
+     configs: 'springbootmongo.yamal'# this yam contents all pod,replication control and service .yaml file
+     kubeconfigID: 'kubernetes_cluster_id'  # this id has taken from the cred window in jenkins
+     enableConfigSubstitution: true
+}
+
