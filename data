@@ -1,0 +1,21 @@
+--- 
+Metadata: 
+  lables: 
+    app: myapp
+    env: dev
+  name: myapp-rc
+Spec: 
+  template: 
+    metadata: 
+      lables: 
+        app: myapp
+        env: dev
+      name: myapp-po
+    spec: 
+      containers: 
+        - 
+          image: "nginx:latest"
+          name: nginx-container
+apiVersion: v1
+kind: ReplicationController
+replicas: 4
